@@ -4,7 +4,16 @@ import {
     MEMO_POST_FAILURE,
     MEMO_LIST,
     MEMO_LIST_SUCCESS,
-    MEMO_LIST_FAILURE
+    MEMO_LIST_FAILURE,
+    MEMO_EDIT,
+    MEMO_EDIT_SUCCESS,
+    MEMO_EDIT_FAILURE,
+    MEMO_REMOVE,
+    MEMO_REMOVE_SUCCESS,
+    MEMO_REMOVE_FAILURE,
+    MEMO_STAR,
+    MEMO_STAR_SUCCESS,
+    MEMO_STAR_FAILURE
 } from './ActionTypes';
 import axios from 'axios';
 
@@ -64,6 +73,16 @@ export function memoListRequest(isInitial, listType, id, username) {
         /* url setup depending on parameters,
          to  be implemented.. */
 
+        if(typeof username==="undefined") {
+            // username not given, load public memo
+            url = isInitial ? url : `${url}/${listType}/${id}`;
+            // or url + '/' + listType + '/' +  id
+        } else {
+            // load memos of specific user
+            /* to be implemented */
+            url = isInitial ? `${url}/${username}` : `${url}/${username}/${listType}/${id}`;
+        }
+
         return axios.get(url)
             .then((response) => {
                 dispatch(memoListSuccess(response.data, isInitial, listType));
@@ -91,5 +110,111 @@ export function memoListSuccess(data, isInitial, listType) {
 export function memoListFailure() {
     return {
         type: MEMO_LIST_FAILURE
+    };
+}
+
+/* MEMO EDIT */
+export function memoEditRequest(id, index, contents) {
+    console.log("메모 에디트 테스트 액션");
+    return (dispatch) => {
+        dispatch(memoEdit());
+        return axios.put('/api/memo/' + id, { contents })
+            .then((response) => {
+                dispatch(memoEditSuccess(index, response.data.memo));
+            }).catch((error) => {
+                dispatch(memoEditFailure(error.response.data.code));
+            });
+    };
+}
+
+export function memoEdit() {
+    return {
+        type: MEMO_EDIT
+    };
+}
+
+// 리스트 데이터중 엑션 인덱스 번째 데이터를 새로운 데이터로 교체
+export function memoEditSuccess(index, memo) {
+    return {
+        type: MEMO_EDIT_SUCCESS,
+        index,
+        memo
+    };
+}
+
+export function memoEditFailure(error) {
+    return {
+        type: MEMO_EDIT_FAILURE,
+        error
+    };
+}
+
+/* MEMO REMOVE */
+export function memoRemoveRequest(id, index) {
+    return (dispatch) => {
+        dispatch(memoRemove());
+
+        return axios.delete('/api/memo/' + id)
+            .then((response) => {
+                dispatch(memoRemoveSuccess(index));
+            }).catch((error) => {
+                dispatch(memoRemoveFailure(error.response.data.code));
+            });
+    };
+}
+
+export function memoRemove() {
+    return {
+        type: MEMO_REMOVE
+    };
+}
+
+export function memoRemoveSuccess(index) {
+    return {
+        type: MEMO_REMOVE_SUCCESS,
+        index
+    };
+}
+
+export function memoRemoveFailure(error) {
+    return {
+        type: MEMO_REMOVE_FAILURE,
+        error
+    };
+}
+
+/* MEMO STAR */
+export function memoStarRequest(id, index) {
+    return (dispatch) => {
+        dispatch(memoStar());
+
+        return axios.post('/api/memo/star/' + id)
+            .then((response) => {
+                dispatch(memoStarSuccess(index, response.data.memo));
+            }).catch((error) => {
+                console.log(error);
+                dispatch(memoStarFailure());
+            });
+    };
+}
+
+export function memoStar() {
+    return {
+        type: MEMO_STAR
+    };
+}
+
+export function memoStarSuccess(index, memo) {
+    return {
+        type: MEMO_STAR_SUCCESS,
+        index,
+        memo
+    };
+}
+
+export function memoStarFailure(error) {
+    return{
+        type: MEMO_STAR_FAILURE,
+        error
     };
 }

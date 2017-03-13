@@ -53,8 +53,8 @@ db.on('error', console.error);
 db.once('open', function () {
     console.log('Connected to mongodb server');
 });
-// mongoose.connect('mongodb://username:password@host:port/database=');
-_mongoose2.default.connect('mongodb://127.0.0.1:27017/codelab');
+_mongoose2.default.connect('mongodb://cheesu:duswkr88##@ds145389.mlab.com:45389/cheesustudy');
+//mongoose.connect('mongodb://127.0.0.1:27017/codelab');
 
 /* use session */
 app.use((0, _expressSession2.default)({

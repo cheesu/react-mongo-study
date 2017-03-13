@@ -4,6 +4,7 @@ module.exports = {
     // 가장 처음 읽을 스크립트파일
     // 여기서부터 import 되어있는 다른 스크립트를 불러온다.
     entry: [
+        'babel-polyfill',
         './src/index.js',
         './src/style.css'
     ],
@@ -40,5 +41,7 @@ module.exports = {
             Actions: path.resolve(__dirname, 'src/actions/'),
             Reducers: path.resolve(__dirname, 'src/reducers/')
         }
-    },
+    }
+
+
 };
